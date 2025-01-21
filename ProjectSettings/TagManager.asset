@@ -11,11 +11,14 @@ TagManager:
   - 
   - Water
   - UI
+<<<<<<< Updated upstream
   - 
   - 
   - 
   - 
   - whatIsGround
+=======
+>>>>>>> Stashed changes
   - 
   - 
   - 
@@ -37,6 +40,14 @@ TagManager:
   - 
   - 
   - 
+<<<<<<< Updated upstream
+=======
+  - 
+  - 
+  - 
+  - 
+  - Teleport
+>>>>>>> Stashed changes
   m_SortingLayers:
   - name: Default
     uniqueID: 0
