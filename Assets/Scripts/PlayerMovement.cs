@@ -1,36 +1,60 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-	public CharacterController controller;
-    
-	public float speed = 12f;
-	public float gravity = -9.81f;
-	public Transform groundCheck;
-	public float groundDistance = 0.4f;
-	public LayerMask groundMask;
+    public float moveSpeed = 5f; 
+    public float mouseSensitivity = 100f; 
+    private float rotationX = 0f;
 
-	Vector3 velocity;
-	bool isGrounded;
-    // Update is called once per frame
+    
+    public AudioClip walkingSound;  
+    private AudioSource audioSource; 
+
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        
+        audioSource = GetComponent<AudioSource>();
+    }
+
     void Update()
     {
-	 isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+       
+        float horizontal = Input.GetAxis("Horizontal"); 
+        float vertical = Input.GetAxis("Vertical"); 
 
-	 if(isGrounded && velocity.y < 0f)
-	 {
-		velocity.y = -2f;
-	 }
-     float x = Input.GetAxis("Horizontal");
-	 float z = Input.GetAxis("Vertical");   
+        
+        if (Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f)
+        {
+            Vector3 move = transform.right * horizontal + transform.forward * vertical;
+            transform.position += move * moveSpeed * Time.deltaTime;
 
-	 Vector3 move = transform.right * x + transform.forward * z;
-	
-	 controller.Move(move * speed * Time.deltaTime);
-	 velocity.y += gravity * Time.deltaTime;
+           
+            if (!audioSource.isPlaying)
+            {
+                audioSource.clip = walkingSound;
+                audioSource.Play();
+            }
+        }
+        else
+        {
+            
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+        }
 
-	controller.Move(velocity * Time.deltaTime);
-	}
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime; 
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime; 
+
+        rotationX -= mouseY;
+        rotationX = Mathf.Clamp(rotationX, -90f, 90f); 
+
+        transform.localRotation = Quaternion.Euler(rotationX, transform.localEulerAngles.y + mouseX, 0f);
+    }
 }
